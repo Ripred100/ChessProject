@@ -8,6 +8,8 @@ displayHeight = 800
 black = (0,0,0)
 white = (255,255,255)
 
+x = Board()
+
 class Board:
     def __init__(self):
         self.positions = [[[1],[2],[3],[4],[5],[6],[7],[8]],
@@ -96,6 +98,3 @@ class Piece:
 #class Queen(Piece):
 #    pass
 
-x = Board()
-
-print(Board)
