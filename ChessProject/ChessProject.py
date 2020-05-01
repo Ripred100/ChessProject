@@ -18,33 +18,34 @@ class Board:
                 [[1],[2],[3],[4],[5],[6],[7],[8]],
                 [[1],[2],[3],[4],[5],[6],[7],[8]],
                 [[1],[2],[3],[4],[5],[6],[7],[8]]]
+        Board.newGame(self)
         
-    def newGame():
-        for x in positions:
+    def newGame(self):
+        for x in self.positions:
             for n in x:
                 del n
                 n = None
 
+        self.positions[0][0] = Rook("white",[0,0])
+        self.positions[0][1] = Knight("white",[0,1])
+        self.positions[0][2] = Bishop("white",[0,2])
+        self.positions[0][3] = King("white",[0,3])
+        self.positions[0][4] = Queen("white",[0,4])
+        self.positions[0][5] = Bishop("white",[0,5])
+        self.positions[0][6] = Rook("white",[0,6])
+        self.positions[0][7] = Knight("white",[0,7])
 
-        positions[0][0] = Rook("white",[0,0])
-        positions[0][1] = Knight("white",[0,1])
-        positions[0][2] = Bishop("white",[0,2])
-        positions[0][3] = King("white",[0,3])
-        positions[0][4] = Queen("white",[0,4])
-        positions[0][5] = Bishop("white",[0,5])
-        positions[0][6] = Rook("white",[0,6])
-        positions[0][7] = Knight("white",[0,7])
+        self.positions[7][0] = Rook("black",[7,0])
+        self.positions[7][1] = Knight("black",[7,1])
+        self.positions[7][2] = Bishop("black",[7,2])
+        self.positions[7][3] = King("black",[7,3])
+        self.positions[7][4] = Queen("black",[7,4])
+        self.positions[7][5] = Bishop("black",[7,5])
+        self.positions[7][6] = Rook("black",[7,6])
+        self.positions[7][7] = Knight("black",[7,7])
 
-        positions[7][0] = Rook("black",[7,0])
-        positions[7][1] = Knight("black",[7,1])
-        positions[7][2] = Bishop("black",[7,2])
-        positions[7][3] = King("black",[7,3])
-        positions[7][4] = Queen("black",[7,4])
-        positions[7][5] = Bishop("black",[7,5])
-        positions[7][6] = Rook("black",[7,6])
-        positions[7][7] = Knight("black",[7,7])
-
-
+    def getPieceInPosition(self,column, row):
+        return self.positions[column][row]
 class Piece:
     def __init__(self,side,position):
         hasMoved = False
@@ -56,22 +57,24 @@ class Piece:
         #IMPORTANT NOTE::: Do not double list vectors that are the same, just mirorred. 
         #When a move can be made to the right, and the left, only list the one going to the right (Positive y and x values)
 
-        position = [0,0]
+        self.position = position
         #position coordinates are column, row starting from 0 to 7, starting with the bottom left corner
         #E.G. bottom left corner is 0,0, top right is 7,7. It behaves like an x,y plane
 
         specialMoves = []
         #things like castling and en passant, maybe i'll add the pawn eating diagonally here
 
-        side = None
+        self.side = side
         #"white" or "black"
 
     def getMoves():
         return posMoves
     def getSpecialMoves():
         return specialMoves
-    def getPosition():
-        return position
+    def getPosition(self):
+        return self.position
+    def __repr__(self):
+        return (f"i am a {self.side} {type(self)} in position {self.getPosition()}")
 
     def getCurrentMoves():
         i = 0
@@ -83,19 +86,20 @@ class Piece:
             currentMoves.append(newSpace)
         return(currentMoves)
 
-#class Pawn(Piece):
-#    pass
-#class Rook(Piece):
-#    pass
-#class Knight(Piece):
-#    pass
-#class Bishop(Piece):
-#    pass
-#class King(Piece):
-#    pass
-#class Queen(Piece):
-#    pass
+class Pawn(Piece):
+    def __init__(self):
+        pass
+class Rook(Piece):
+    pass
+class Knight(Piece):
+    pass
+class Bishop(Piece):
+    pass
+class King(Piece):
+    pass
+class Queen(Piece):
+    pass
 
 x = Board()
 
-print(Board)
+print(x.getPieceInPosition(0,1))
