@@ -1,5 +1,5 @@
 
-import sys, pygame
+import sys, pygame, exceptions
 pygame.init()
 
 displayWidth = 800
@@ -35,6 +35,9 @@ class Board:
         self.positions[0][6] = Rook("white",[0,6])
         self.positions[0][7] = Knight("white",[0,7])
 
+        for i in range(8):
+            self.positions[1][i] = Pawn("white",[1,i])
+
         self.positions[7][0] = Rook("black",[7,0])
         self.positions[7][1] = Knight("black",[7,1])
         self.positions[7][2] = Bishop("black",[7,2])
@@ -44,12 +47,15 @@ class Board:
         self.positions[7][6] = Rook("black",[7,6])
         self.positions[7][7] = Knight("black",[7,7])
 
+        for i in range(8):
+            self.positions[6][i] = Pawn("black",[6,i])
+
     def getPieceInPosition(self,column, row):
         return self.positions[column][row]
 class Piece:
     def __init__(self,side,position):
-        hasMoved = False
-        posMoves = [[1,1],[1,2]]
+        self.hasMoved = False
+        self.posMoves = [[1,1],[1,2]]
 
         #posMoves is a list of possible moves for the piece. The notation is in the form of a vector and a modifyer, [x,y,modifier]
         #the modifier denotes wether the move is only available forward (f), or only if the piece hasnt moved yet (m). default is (d).
@@ -61,36 +67,54 @@ class Piece:
         #position coordinates are column, row starting from 0 to 7, starting with the bottom left corner
         #E.G. bottom left corner is 0,0, top right is 7,7. It behaves like an x,y plane
 
-        specialMoves = []
+        self.specialMoves = []
         #things like castling and en passant, maybe i'll add the pawn eating diagonally here
 
         self.side = side
         #"white" or "black"
 
-    def getMoves():
-        return posMoves
-    def getSpecialMoves():
-        return specialMoves
+    def getMoves(self):
+        return self.posMoves
+    def getSpecialMoves(self):
+        return self.specialMoves
     def getPosition(self):
         return self.position
     def __repr__(self):
         return (f"i am a {self.side} {type(self)} in position {self.getPosition()}")
 
-    def getCurrentMoves():
+    def getCurrentMoves(self):
         i = 0
         currentMoves = []
-        for x in getMoves():
-            while (i < len(x)):
-                newSpace[i] = x[i] + getposition()[i]
-                i = i+1
-            currentMoves.append(newSpace)
+        newSpace= []
+        for x in self.getMoves():
+            try:
+                while (i < len(x)):
+                    j = x[i] + self.getPosition()[i]
+                    if j > 7 and j < 0:
+                        raise OOB
+                    newSpace.append(j)
+                    i = i+1
+                currentMoves.append(newSpace)
+            except OOB:
+                continue
         return(currentMoves)
 
 class Pawn(Piece):
-    def __init__(self):
-        pass
+    def __init__(self,side,position):
+        #constants
+        self.hasMoved = False
+        self.posMoves = [[0,1],[8,8]]
+        #Variable
+        self.side = side
+        self.position = position
 class Rook(Piece):
-    pass
+    def __init__(self,side,position):
+        #constants
+        self.hasMoved = False
+        self.posMoves = [[0,1]]
+        #Variable
+        self.side = side
+        self.position = position
 class Knight(Piece):
     pass
 class Bishop(Piece):
@@ -102,4 +126,4 @@ class Queen(Piece):
 
 x = Board()
 
-print(x.getPieceInPosition(0,1))
+print(x.getPieceInPosition(1,1).getCurrentMoves())
