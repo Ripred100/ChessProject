@@ -1,12 +1,20 @@
 
-import sys, pygame, exceptions
+import sys, pygame
 pygame.init()
+
 
 displayWidth = 800
 displayHeight = 800
 
 black = (0,0,0)
 white = (255,255,255)
+
+
+def addArr(pos,move):
+    x = pos[0] + move[0]
+    y = pos[1] + move[1]
+    return [x,y]
+
 
 class Board:
     def __init__(self):
@@ -57,7 +65,7 @@ class Piece:
         self.hasMoved = False
         self.posMoves = [[1,1],[1,2]]
 
-        #posMoves is a list of possible moves for the piece. The notation is in the form of a vector and a modifyer, [x,y,modifier]
+        #posMoves is a list of possible moves for the piece. Currently, just a vector of all possible moves TO DO: The notation is in the form of a vector and a modifyer, [x,y,modifier]
         #the modifier denotes wether the move is only available forward (f), or only if the piece hasnt moved yet (m). default is (d).
         #the x and y vectors can be set = "n" if the move doesnt have limited range like a bishop's or a rook.
         #IMPORTANT NOTE::: Do not double list vectors that are the same, just mirorred. 
@@ -83,27 +91,24 @@ class Piece:
         return (f"i am a {self.side} {type(self)} in position {self.getPosition()}")
 
     def getCurrentMoves(self):
-        i = 0
         currentMoves = []
-        newSpace= []
+        validMoves = []
         for x in self.getMoves():
-            try:
-                while (i < len(x)):
-                    j = x[i] + self.getPosition()[i]
-                    if j > 7 and j < 0:
-                        raise OOB
-                    newSpace.append(j)
-                    i = i+1
-                currentMoves.append(newSpace)
-            except OOB:
-                continue
-        return(currentMoves)
+            currentMoves.append(addArr(self.getPosition(),x))
+
+        for x in currentMoves:
+            if x[0] < 8 and x[0] >= 0 and  x[1] < 8 and x[1] >= 0:
+                validMoves.append(x)
+        return validMoves
+            
+       
 
 class Pawn(Piece):
     def __init__(self,side,position):
         #constants
         self.hasMoved = False
-        self.posMoves = [[0,1],[8,8]]
+        self.finiteMovement = True
+        self.posMoves = [[0,1]]
         #Variable
         self.side = side
         self.position = position
@@ -111,19 +116,48 @@ class Rook(Piece):
     def __init__(self,side,position):
         #constants
         self.hasMoved = False
-        self.posMoves = [[0,1]]
+        self.finiteMovement = False
+        self.posMoves = [[0,1],[1,0]]
         #Variable
         self.side = side
         self.position = position
 class Knight(Piece):
-    pass
+    def __init__(self,side,position):
+        #constants
+        self.hasMoved = False
+        self.finiteMovement = True
+        self.posMoves = [[2,1],[1,2]]
+        #Variable
+        self.side = side
+        self.position = position
 class Bishop(Piece):
-    pass
+    def __init__(self,side,position):
+        #constants
+        self.hasMoved = False
+        self.finiteMovement = False
+        self.posMoves = [[1,1]]
+        #Variable
+        self.side = side
+        self.position = position
 class King(Piece):
-    pass
+    def __init__(self,side,position):
+        #constants
+        self.hasMoved = False
+        self.finiteMovement = True
+        self.posMoves = [[0,1],[1,0]]
+        #Variable
+        self.side = side
+        self.position = position
 class Queen(Piece):
-    pass
+    def __init__(self,side,position):
+        #constants
+        self.hasMoved = False
+        self.finiteMovement = False
+        self.posMoves = [[1,1],[1,0],[0,1]]
+        #Variable
+        self.side = side
+        self.position = position
 
 x = Board()
 
-print(x.getPieceInPosition(1,1).getCurrentMoves())
+print(x.getPieceInPosition(0,0).getCurrentMoves())
